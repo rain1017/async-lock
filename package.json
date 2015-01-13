@@ -1,8 +1,8 @@
 {
 	"name": "async-lock",
 	"description": "",
-	"version": "0.1.0",
-	"author": "rain",
+	"version": "0.1.1",
+	"author": "rain1017",
 	"private" : false,
 	"homepage" : "https://github.com/rain1017/async-lock",
 	"repository" : {
@@ -15,8 +15,7 @@
 	"keywords" : [
 	],
 	"engines": {
-		"node": "0.10.x",
-		"npm": "1.4.x"
+		"node": "0.10.x"
 	},
 	"scripts": {
 		"start": "grunt",
