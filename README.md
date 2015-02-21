@@ -23,7 +23,6 @@ lock.acquire(key, function(done){
 }, function(err, ret){
 	// lock released
 }, opts);
-```
 
 // Promise mode
 lock.acquire(key, function(){
