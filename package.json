@@ -1,7 +1,7 @@
 {
 	"name": "async-lock",
 	"description": "",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"author": "rain1017",
 	"private" : false,
 	"homepage" : "https://github.com/rain1017/async-lock",
@@ -26,10 +26,10 @@
 		"postinstall": ""
 	},
 	"dependencies": {
-		"q": "~1.1.2",
-		"lodash": "~3.2.0"
+		"q": "~1.1.2"
 	},
 	"devDependencies": {
+		"lodash": "~3.3.0",
 		"should": "~4.5.0",
 		"grunt-cli": "~0.1.13",
 		"grunt-env": "~0.4.2",

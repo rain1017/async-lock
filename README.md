@@ -13,7 +13,7 @@ var lock = new AsyncLock();
 
 /**
  * @param {String|Array} key 	resource key or keys to lock
- * @param {function} fn 	async function with node.js style
+ * @param {function} fn 	execute function
  * @param {function} cb 	(optional) callback function, otherwise will return a promise
  * @param {Object} opts 	(optional) options
  */
@@ -25,13 +25,29 @@ lock.acquire(key, function(done){
 }, opts);
 ```
 
-## Promise mode
-
-```
+// Promise mode
 lock.acquire(key, function(){
 	// return value or promise
-}).then(function(){
+}, opts).then(function(){
 	// lock released
+});
+```
+
+## Error Handling
+
+```
+// Callback mode
+lock.acquire(key, function(done){
+	done(new Error('error'));
+}, function(err, ret){
+	console.log(err.message) // output: error
+});
+
+// Promise mode
+lock.acquire(key, function(){
+	throw new Error('error');
+}).catch(function(err){
+	console.log(err.message) // output: error
 });
 ```
 
