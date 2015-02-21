@@ -1,7 +1,11 @@
 'use strict';
 
+var Q = require('q');
+var _ = require('lodash');
 var AsyncLock = require('../index.js');
 var assert = require('assert');
+
+Q.longStackSupport = true;
 
 describe('AsyncLock Tests', function(){
 	it('Single key test', function(done){
@@ -118,6 +122,58 @@ describe('AsyncLock Tests', function(){
 			}, 20);
 		}, function(err){
 			assert(err);
+		});
+	});
+
+	it('Promise mode', function(done){
+		var lock = new AsyncLock();
+		var value = 0;
+		var concurrency = 8;
+
+		Q.all(_.range(concurrency).map(function(){
+			return lock.acquire('key', function(){
+				var tmp = null;
+				// Simulate non-atomic check and set
+				return Q() // jshint ignore:line
+				.delay(_.random(10))
+				.then(function(){
+					tmp = value;
+				})
+				.delay(_.random(20))
+				.then(function(){
+					value = tmp + 1;
+				});
+			});
+		})).then(function(){
+			assert(value === concurrency);
+			done();
+		}, function(err){
+			done(err);
+		});
+	});
+
+	it('Error handling', function(done){
+		var lock = new AsyncLock();
+		lock.acquire('key', function(){
+			throw new Error('error');
+		}).catch(function(e){
+			assert(e.message === 'error');
+			done();
+		});
+	});
+
+	it('Too much pending', function(done){
+		var lock = new AsyncLock({maxPending : 1});
+		lock.acquire('key', function(){
+			return Q().delay(20); // jshint ignore:line
+		});
+		lock.acquire('key', function(){
+			return Q().delay(20); // jshint ignore:line
+		});
+
+		lock.acquire('key', function(){})
+		.catch(function(e){
+			done();
 		});
 	});
 });

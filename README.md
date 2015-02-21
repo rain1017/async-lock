@@ -14,10 +14,25 @@ var lock = new AsyncLock();
 /**
  * @param {String|Array} key 	resource key or keys to lock
  * @param {function} fn 	async function with node.js style
- * @param {function} cb 	(optional) callback function
+ * @param {function} cb 	(optional) callback function, otherwise will return a promise
  * @param {Object} opts 	(optional) options
  */
-lock.acquire(key, fn, cb, opts);
+lock.acquire(key, function(done){
+	// async work
+	done(err, ret);
+}, function(err, ret){
+	// lock released
+}, opts);
+```
+
+## Promise mode
+
+```
+lock.acquire(key, function(){
+	// return value or promise
+}).then(function(){
+	// lock released
+});
 ```
 
 ## Acquire multiple keys
@@ -26,24 +41,28 @@ lock.acquire(key, fn, cb, opts);
 lock.acquire([key1, key2], fn, cb);
 ```
 
-## Specify timeout
+## Options
 
 ```
+// Specify timeout
 var lock = new AsyncLock({timeout : 5000});
-lock.acquire(key, fn, function(err){
+lock.acquire(key, fn, cb, function(err, ret){
 	// timed out error will be returned here if fn has not return within given time
 });
 
-//Specify timeout for one function
+// Specify timeout for one function
 lock.acquire(key, fn, cb, {timeout : 5000});
-```
 
-## Get running state
+// Set max pending tasks
+var lock = new AsyncLock({maxPending : 1000});
+lock.acquire(key, fn, cb, function(err, ret){
+	// Handle too much pending error
+})
 
-```
-// Where there is any running or pending async function
+// Whether there is any running or pending async function
 lock.isBusy();
 ```
+
 
 ## License
 (The MIT License)
