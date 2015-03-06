@@ -67,6 +67,8 @@ lock.acquire([key1, key2], fn, cb);
 
 ## Domain reentrant lock
 
+Lock is reentrant in the same domain
+
 ```
 var domain = require('domain');
 var lock = new AsyncLock({domainReentrant : true});
