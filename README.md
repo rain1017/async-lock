@@ -1,9 +1,18 @@
 # async-lock
 
-Mutex on asynchronous code
+Lock on asynchronous code
 
 [![Build Status](https://travis-ci.org/rain1017/async-lock.svg?branch=master)](https://travis-ci.org/rain1017/async-lock)
 [![Dependencies Status](https://david-dm.org/rain1017/async-lock.svg)](https://david-dm.org/rain1017/async-lock)
+
+Lock on asynchronous code for concurrency control
+
+* Q supported
+* Multiple keys lock supported
+* Domain reentrant supported
+* Timeout supported
+* Pending task limit supported
+* 100% code coverage
 
 ## Get Started
 
@@ -54,6 +63,23 @@ lock.acquire(key, function(){
 
 ```
 lock.acquire([key1, key2], fn, cb);
+```
+
+## Domain reentrant lock
+
+```
+var domain = require('domain');
+var lock = new AsyncLock({domainReentrant : true});
+
+var d = domain.create();
+d.run(function(){
+	lock.acquire('key', function(){
+		//Enter lock
+		return lock.acquire('key', function(){
+			//Enter same lock twice
+		});
+	});
+});
 ```
 
 ## Options

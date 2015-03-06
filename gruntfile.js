@@ -37,7 +37,7 @@ module.exports = function(grunt) {
 				src: watchFiles.testJS,
 				options : {
 					reporter: 'spec',
-					timeout: 10000,
+					timeout: 5000,
 					require: 'test/blanket'
 				}
 			},

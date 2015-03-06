@@ -3,6 +3,7 @@
 var Q = require('q');
 var _ = require('lodash');
 var AsyncLock = require('../index.js');
+var domain = require('domain');
 var assert = require('assert');
 
 Q.longStackSupport = true;
@@ -152,6 +153,39 @@ describe('AsyncLock Tests', function(){
 		});
 	});
 
+	it('reentrant lock in the same domain', function(done){
+		var lock = new AsyncLock({domainReentrant : true});
+		var d1 = domain.create();
+		d1.run(function(){
+			lock.acquire('key', function(){
+				console.log('d1 locked key');
+				return Q() // jshint ignore:line
+				.delay(20)
+				.then(function(){
+					//Enter same lock twice
+					return lock.acquire('key', function(){
+						console.log('d1 locked key twice');
+					});
+				});
+			});
+		});
+
+		var d2 = domain.create();
+		d2.run(function(){
+			return Q() // jshint ignore:line
+			.delay(10)
+			.then(function(){
+				return lock.acquire('key', function(){
+					console.log('d2 locked key');
+					return lock.acquire('key', function(){
+						console.log('d2 locked key twice');
+					});
+				});
+			})
+			.nodeify(done);
+		});
+	});
+
 	it('Error handling', function(done){
 		var lock = new AsyncLock();
 		lock.acquire('key', function(){
@@ -175,5 +209,15 @@ describe('AsyncLock Tests', function(){
 		.catch(function(e){
 			done();
 		});
+	});
+
+	it('invalid parameter', function(done){
+		var lock = new AsyncLock();
+		try{
+			lock.acquire('key', null);
+		}
+		catch(e){
+			done();
+		}
 	});
 });
