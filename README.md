@@ -104,6 +104,9 @@ lock.acquire(key, fn, cb, function(err, ret){
 
 // Whether there is any running or pending async function
 lock.isBusy();
+
+// Use your own promise
+var lock = new AsyncLock({Promise : require('bluebird')});
 ```
 
 

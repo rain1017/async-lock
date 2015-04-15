@@ -211,6 +211,12 @@ describe('AsyncLock Tests', function(){
 		});
 	});
 
+	it('use bluebird promise', function(done){
+		var lock = new AsyncLock({Promise : require('bluebird')});
+		lock.acquire('key', function(){})
+		.nodeify(done);
+	});
+
 	it('invalid parameter', function(done){
 		var lock = new AsyncLock();
 		try{
