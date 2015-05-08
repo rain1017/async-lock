@@ -1,3 +1,7 @@
+0.3.2 / 2015-05-08
+==================
+* Set default timeout to never
+
 0.3.1 / 2015-04-15
 ==================
 * Use your own promise
