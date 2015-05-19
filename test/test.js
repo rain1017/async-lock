@@ -145,12 +145,30 @@ describe('AsyncLock Tests', function(){
 					value = tmp + 1;
 				});
 			});
-		})).then(function(){
+		}))
+		.then(function(){
 			assert(value === concurrency);
-			done();
-		}, function(err){
-			done(err);
-		});
+		})
+		.then(function(){
+			var key1 = false, key2 = false;
+			lock.acquire('key1', function(){
+				key1 = true;
+				return Q.delay(20).then(function(){
+					key1 = false;
+				});
+			});
+			lock.acquire('key2', function(){
+				key2 = true;
+				return Q.delay(10).then(function(){
+					key2 = false;
+				});
+			});
+
+			return lock.acquire(['key1', 'key2'], function(){
+				assert(key1 === false && key2 === false);
+			});
+		})
+		.nodeify(done);
 	});
 
 	it('reentrant lock in the same domain', function(done){
