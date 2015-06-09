@@ -114,15 +114,27 @@ describe('AsyncLock Tests', function(){
 	});
 
 	it('Time out test', function(done){
-		var lock = new AsyncLock({timeout : 10});
+		var lock = new AsyncLock({timeout : 20});
+		var timedout = false;
 
 		lock.acquire('key', function(cb){
-			setTimeout(function(){
-				cb(); //Should not called twice
-				done();
-			}, 20);
-		}, function(err){
-			assert(err);
+			setTimeout(cb, 50);
+		})
+		.then(function(err){
+			assert(timedout);
+			done();
+		});
+
+		lock.acquire('key', function(cb){
+			assert('should not execute here');
+			cb();
+		})
+		.catch(function(err){
+			// timed out
+			console.log(err);
+			if(err){
+				timedout = true;
+			}
 		});
 	});
 

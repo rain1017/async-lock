@@ -90,11 +90,8 @@ d.run(function(){
 // Specify timeout
 var lock = new AsyncLock({timeout : 5000});
 lock.acquire(key, fn, cb, function(err, ret){
-	// timed out error will be returned here if fn has not return within given time
+	// timed out error will be returned here if lock not acquired in given time
 });
-
-// Specify timeout for one function
-lock.acquire(key, fn, cb, {timeout : 5000});
 
 // Set max pending tasks
 var lock = new AsyncLock({maxPending : 1000});
