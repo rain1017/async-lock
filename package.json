@@ -32,7 +32,7 @@
 	},
 	"devDependencies": {
 		"bluebird": "~2.9.34",
-		"lodash": "~3.10.1",
+		"lodash": "~4.17.19",
 		"should": "~5.1.0",
 		"grunt-cli": "~0.1.13",
 		"grunt-env": "~0.4.2",
